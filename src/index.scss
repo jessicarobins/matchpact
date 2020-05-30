@@ -1,4 +1,16 @@
-@import '~bulma/css/bulma.css';
+@charset "utf-8";
+
+$primary: #ae9acc;
+$info: #5662b2;
+$success: #69a975;
+$warning: #e7993d;
+$danger: #f44336;
+$light: #eef0f0;
+$light-accent: #e84f89;
+$dark-accent: #747175;
+$dark: #5662b2;
+
+@import '../node_modules/bulma/bulma.sass';
 
 body {
   margin: 0;
@@ -18,6 +30,10 @@ button {
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
+.has-text-accent-dark {
+  color: $dark-accent !important;
+}
+
 .special-font {
-  font-family: 'Comfortaa';
+  font-family: 'Pacifico';
 }

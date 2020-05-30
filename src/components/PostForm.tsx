@@ -25,12 +25,14 @@ const PostForm: FC<Props> = (props: Props) => {
             className="textarea is-primary is-large"
             value={text}
             onChange={handleChange}
+            maxLength={500}
+            placeholder="What did they tell you was normal?"
           ></textarea>
         </div>
       </div>
       <div className="buttons is-centered">
-        <button className="button is-large is-primary" type="submit">
-          Truth or Gaslight?
+        <button className="button is-large is-dark" type="submit">
+          Is it true?
         </button>
       </div>
     </form>
