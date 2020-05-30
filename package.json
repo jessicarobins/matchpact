@@ -19,12 +19,13 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --no-cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --check \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
-    "prettier:fix": "prettier --write \"{shared,src}/**/*.{js,jsx,ts,tsx}\""
+    "prettier:fix": "prettier --write \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
+    "deploy:dev": "rm -rf build/ && env-cmd -f .env.development yarn build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }
