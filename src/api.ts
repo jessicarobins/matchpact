@@ -36,10 +36,9 @@ export const fetchPosts = async (): Promise<Post[]> => {
 export const createPost = async (text: string): Promise<Post> => {
   const docRef = await firebase.firestore().collection('posts').add({
     createdAt: new Date(),
-    gaslights: 0,
     text,
-    truths: 0,
     userUid: firebase.auth().currentUser?.uid,
+    votes: {},
   });
   const doc = await docRef.get();
 

@@ -30,6 +30,10 @@ button {
     'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
+.has-text-accent-light {
+  color: $light-accent !important;
+}
+
 .has-text-accent-dark {
   color: $dark-accent !important;
 }

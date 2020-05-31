@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "tog-dev"
+    "dev": "tog-dev",
+    "prod": "tog-prod"
   }
 }

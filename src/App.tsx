@@ -1,6 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase/app';
 import Home from './pages/Home';
+import Loading from './pages/Loading';
 
 const App = () => {
   const [userId, setUserId] = React.useState('');
@@ -21,7 +22,7 @@ const App = () => {
   }, []);
 
   if (!userId) {
-    return null;
+    return <Loading />;
   }
 
   return <Home userId={userId} />;

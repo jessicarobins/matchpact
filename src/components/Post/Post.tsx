@@ -8,7 +8,7 @@ type Props = {
 };
 
 const Post: FC<Props> = (props: Props) => {
-  const votes = Object.values(props.post.votes);
+  const votes = Object.values(props.post.votes || {});
   const truths = votes.filter(Boolean).length;
   const gaslights = votes.length - truths;
   const isTruth = truths > gaslights;

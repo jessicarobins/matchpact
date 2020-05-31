@@ -17,6 +17,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 ReactDOM.render(
   <React.StrictMode>
