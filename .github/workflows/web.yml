@@ -6,10 +6,10 @@ name: Web
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     paths-ignore: [functions]
   pull_request:
-    branches: [ master ]
+    branches: [master]
     paths-ignore: [functions]
 
 jobs:
@@ -61,6 +61,11 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SENTRY_DEPLOY_ENVIRONMENT: ${{ secrets.SENTRY_DEPLOY_ENVIRONMENT }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -83,3 +88,29 @@ jobs:
           args: deploy -P prod --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      - name: Install sentry cli
+        run: |
+          # Install Sentry CLI
+          curl -sL https://sentry.io/get-cli/ | bash
+      - name: Deploy Sentry dev release
+        if: github.ref != 'refs/heads/master'
+        env:
+          SENTRY_DEPLOY_ENVIRONMENT: dev
+        run: |
+          # Create new Sentry release
+          export SENTRY_RELEASE=$(sentry-cli releases propose-version)
+          sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+          sentry-cli releases set-commits --auto $SENTRY_RELEASE
+          sentry-cli releases finalize $SENTRY_RELEASE
+          sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
+      - name: Deploy Sentry prod release
+        if: github.ref == 'refs/heads/master'
+        env:
+          SENTRY_DEPLOY_ENVIRONMENT: prod
+        run: |
+          # Create new Sentry release
+          export SENTRY_RELEASE=$(sentry-cli releases propose-version)
+          sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+          sentry-cli releases set-commits --auto $SENTRY_RELEASE
+          sentry-cli releases finalize $SENTRY_RELEASE
+          sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
