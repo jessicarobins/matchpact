@@ -7,10 +7,8 @@ name: Web
 on:
   push:
     branches: [master]
-    paths-ignore: [functions]
   pull_request:
     branches: [master]
-    paths-ignore: [functions]
 
 jobs:
   build:
@@ -23,22 +21,7 @@ jobs:
         uses: borales/actions-yarn@v2.0.0
         with:
           cmd: install
-      - name: Build Dev
-        if: github.ref != 'refs/heads/master'
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build
-        env:
-          REACT_APP_TOG_FIREBASE_API_KEY: ${{ secrets.DEV_REACT_APP_TOG_FIREBASE_API_KEY }}
-          REACT_APP_TOG_FIREBASE_AUTH_DOMAIN: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_AUTH_DOMAIN}}
-          REACT_APP_TOG_FIREBASE_DATABASE_URL: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_DATABASE_URL}}
-          REACT_APP_TOG_FIREBASE_PROJECT_ID: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_PROJECT_ID}}
-          REACT_APP_TOG_FIREBASE_STORAGE_BUCKET: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_STORAGE_BUCKET}}
-          REACT_APP_TOG_FIREBASE_MESSAGING_SENDER_ID: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_MESSAGING_SENDER_ID}}
-          REACT_APP_TOG_FIREBASE_APP_ID: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_APP_ID}}
-          REACT_APP_TOG_FIREBASE_MEASUREMENT_ID: ${{secrets.DEV_REACT_APP_TOG_FIREBASE_MEASUREMENT_ID}}
-      - name: Build Prod
-        if: github.ref == 'refs/heads/master'
+      - name: Build
         uses: borales/actions-yarn@v2.0.0
         with:
           cmd: build
@@ -61,11 +44,12 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-      SENTRY_DEPLOY_ENVIRONMENT: ${{ secrets.SENTRY_DEPLOY_ENVIRONMENT }}
+      SENTRY_DEPLOY_ENVIRONMENT: prod
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -74,15 +58,7 @@ jobs:
         with:
           name: build
           path: build
-      - name: Deploy Dev to Firebase
-        if: github.ref != 'refs/heads/master'
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy -P dev --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
       - name: Deploy Prod to Firebase
-        if: github.ref == 'refs/heads/master'
         uses: w9jds/firebase-action@master
         with:
           args: deploy -P prod --only hosting
@@ -92,19 +68,7 @@ jobs:
         run: |
           # Install Sentry CLI
           curl -sL https://sentry.io/get-cli/ | bash
-      - name: Deploy Sentry dev release
-        if: github.ref != 'refs/heads/master'
-        env:
-          SENTRY_DEPLOY_ENVIRONMENT: dev
-        run: |
-          # Create new Sentry release
-          export SENTRY_RELEASE=$(sentry-cli releases propose-version)
-          sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
-          sentry-cli releases set-commits --auto $SENTRY_RELEASE
-          sentry-cli releases finalize $SENTRY_RELEASE
-          sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
-      - name: Deploy Sentry prod release
-        if: github.ref == 'refs/heads/master'
+      - name: Deploy Sentry release
         env:
           SENTRY_DEPLOY_ENVIRONMENT: prod
         run: |

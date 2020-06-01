@@ -5,7 +5,7 @@ const Loading: FC<{}> = () => (
     <div className="hero-body">
       <div className="container has-text-centered">
         <div className="fa-5x">
-          <i className="far fa-meh-rolling-eyes fa-spin has-text-accent-light"></i>
+          <i className="fars fa-donate fa-spin has-text-accent-light"></i>
         </div>
       </div>
     </div>

@@ -19,21 +19,21 @@ const PostForm: FC<Props> = (props: Props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="field">
-        <div className="control">
-          <textarea
-            className="textarea is-primary is-large"
-            value={text}
+      <div className="field has-addons">
+        <div className="control is-expanded">
+          <input
+            className="input is-large"
             onChange={handleChange}
-            maxLength={500}
-            placeholder="What did they tell you was normal?"
-          ></textarea>
+            placeholder="Twitter link"
+            type="text"
+            value={text}
+          />
         </div>
-      </div>
-      <div className="buttons is-centered">
-        <button className="button is-large is-dark" type="submit">
-          Is it true?
-        </button>
+        <div className="control">
+          <button className="button is-info is-large" type="submit">
+            Submit
+          </button>
+        </div>
       </div>
     </form>
   );

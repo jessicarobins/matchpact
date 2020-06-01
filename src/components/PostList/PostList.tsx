@@ -3,9 +3,8 @@ import Post from '../Post';
 import './PostList.css';
 
 type Props = {
-  onVote: (postId: string, vote: boolean) => void;
+  onComplete: (postId: string) => void;
   posts: Post[];
-  votes: VoteMap;
 };
 
 const PostList: FC<Props> = (props: Props) => {
@@ -17,11 +16,7 @@ const PostList: FC<Props> = (props: Props) => {
           key={post.id}
         >
           <div className="tile is-child">
-            <Post
-              onVote={props.onVote}
-              post={post}
-              vote={props.votes[post.id]}
-            />
+            <Post onComplete={props.onComplete} post={post} />
           </div>
         </div>
       ))}

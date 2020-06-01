@@ -1,27 +1,5 @@
 import * as firebase from 'firebase/app';
 
-export const fetchVotes = async (): Promise<VoteMap> => {
-  const currentUser = firebase.auth().currentUser;
-  if (!currentUser) {
-    return {};
-  }
-
-  const votes = {} as VoteMap;
-  const snapshot = await firebase
-    .firestore()
-    .collection('users')
-    .doc(currentUser.uid)
-    .collection('votes')
-    .get();
-
-  snapshot.forEach(function (doc) {
-    const vote = { ...doc.data(), id: doc.id } as Vote;
-    votes[doc.id] = vote;
-  });
-
-  return votes;
-};
-
 export const fetchPosts = async (): Promise<Post[]> => {
   const posts = [] as Post[];
   const snapshot = await firebase.firestore().collection('posts').get();
@@ -33,33 +11,27 @@ export const fetchPosts = async (): Promise<Post[]> => {
   return posts;
 };
 
-export const createPost = async (text: string): Promise<Post> => {
-  const docRef = await firebase.firestore().collection('posts').add({
+export const createPost = async (tweetUrl: string): Promise<Post> => {
+  const postParams: Omit<Post, 'id'> = {
+    approvedAt: new Date(),
     createdAt: new Date(),
-    text,
-    userUid: firebase.auth().currentUser?.uid,
-    votes: {},
-  });
+    createdBy: firebase.auth().currentUser?.uid,
+    tweetUrl,
+  };
+
+  const docRef = await firebase.firestore().collection('posts').add(postParams);
   const doc = await docRef.get();
 
   const post = { ...doc.data(), id: docRef.id } as Post;
   return post;
 };
 
-export const setVote = async (postId: string, truth: boolean) => {
-  const currentUser = firebase.auth().currentUser;
-  if (!currentUser) {
-    return {};
-  }
-
-  return firebase
+export const completePost = async (postId: string): Promise<void> =>
+  firebase
     .firestore()
-    .collection('users')
-    .doc(currentUser.uid)
-    .collection('votes')
+    .collection('posts')
     .doc(postId)
-    .set({
-      createdAt: new Date(),
-      truth,
+    .update({
+      completedAt: new Date(),
+      completedBy: firebase.auth().currentUser?.uid,
     });
-};

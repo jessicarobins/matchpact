@@ -1,16 +1,9 @@
 interface Post {
+  approvedAt: Date;
+  completeAt?: Date;
+  completedBy?: string;
   createdAt: Date;
+  createdBy?: string;
   id: string;
-  text: string;
-  votes: { [userId: string]: boolean };
-}
-
-interface Vote {
-  createdAt?: Date;
-  id: string;
-  truth: boolean;
-}
-
-interface VoteMap {
-  [postId: string]: Vote;
+  tweetUrl: string;
 }

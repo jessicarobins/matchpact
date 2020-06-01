@@ -7,7 +7,7 @@ const App = () => {
   const [userId, setUserId] = React.useState('');
 
   React.useEffect(() => {
-    firebase.auth().signInAnonymously().catch(console.log);
+    firebase.auth().signInAnonymously();
   }, []);
 
   React.useEffect(() => {

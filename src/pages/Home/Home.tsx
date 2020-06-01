@@ -10,16 +10,11 @@ type Props = {
 
 const Home: FC<Props> = (props: Props) => {
   const [posts, setPosts] = React.useState([] as Post[]);
-  const [votes, setVotes] = React.useState({} as VoteMap);
 
   React.useEffect(() => {
     async function getPosts() {
-      const [posts, votes] = await Promise.all([
-        api.fetchPosts(),
-        api.fetchVotes(),
-      ]);
+      const posts = await api.fetchPosts();
       setPosts(posts);
-      setVotes(votes);
     }
 
     getPosts();
@@ -30,28 +25,12 @@ const Home: FC<Props> = (props: Props) => {
     setPosts([post, ...posts]);
   };
 
-  const onVote = async (postId: string, vote: boolean) => {
-    api.setVote(postId, vote);
-    setVotes({ ...votes, [postId]: { id: postId, truth: vote } });
-    setPosts((prevValue) =>
-      prevValue.map((post) => {
-        if (post.id === postId) {
-          return { ...post, votes: { ...post.votes, [props.userId]: vote } };
-        }
-
-        return post;
-      }),
-    );
-  };
-
   return (
     <div className="has-background-dark">
-      <section className="hero is-light is-medium">
+      <section className="hero is-light">
         <div className="hero-body">
           <div className="container">
-            <h1 className="title special-font is-1 has-text-dark">
-              Truth or Gaslighting?
-            </h1>
+            <h1 className="title special-font is-1 has-text-dark">matchpact</h1>
             <h2 className="subtitle is-3 has-text-accent-dark">
               Crowdsource reality
             </h2>
@@ -60,7 +39,7 @@ const Home: FC<Props> = (props: Props) => {
         </div>
       </section>
       <section className="container post-list-container">
-        <PostList onVote={onVote} posts={posts} votes={votes} />
+        <PostList onComplete={api.completePost} posts={posts} />
       </section>
     </div>
   );

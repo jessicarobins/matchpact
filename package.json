@@ -4,20 +4,11 @@
   "private": true,
   "dependencies": {
     "@sentry/browser": "^5.15.5",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^25.2.3",
-    "@types/node": "^14.0.5",
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8",
     "bulma": "^0.8.2",
     "firebase": "^7.14.5",
-    "prettier": "^2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "^3.9.3"
+    "react-scripts": "3.4.1"
   },
   "scripts": {
     "start": "react-scripts start --no-cache",
@@ -26,7 +17,6 @@
     "eject": "react-scripts eject",
     "prettier": "prettier --check \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
-    "deploy:dev": "rm -rf build/ && env-cmd -f .env.development yarn build && firebase deploy -P dev",
     "deploy:prod": "rm -rf build/ && env-cmd -f .env.production yarn build && firebase deploy -P prod"
   },
   "eslintConfig": {
@@ -45,7 +35,16 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.5",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "env-cmd": "^10.1.0",
-    "node-sass": "^4.14.1"
+    "node-sass": "^4.14.1",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.3"
   }
 }

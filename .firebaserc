@@ -1,6 +1,5 @@
 {
   "projects": {
-    "dev": "tog-dev",
-    "prod": "tog-prod"
+    "prod": "matchpact"
   }
 }
