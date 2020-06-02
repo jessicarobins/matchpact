@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+import TweetEmbed from 'react-tweet-embed';
+import { getTwitterId } from '../../util';
 import './Post.css';
 
 type Props = {
@@ -9,21 +11,18 @@ type Props = {
 const Post: FC<Props> = (props: Props) => {
   const handleComplete = () => props.onComplete(props.post.id);
 
+  const tweetId = getTwitterId(props.post.tweetUrl);
+
+  if (!tweetId) {
+    return null;
+  }
+
   return (
-    <div className="card post">
-      <div className="card-content">
-        <p className="title is-4">{props.post.tweetUrl}</p>
-      </div>
-      <footer className="card-footer">
-        <p className="card-footer-item">
-          <button className="button is-success" onClick={handleComplete}>
-            <span className="icon">
-              <i className="fas fa-thumbs-up"></i>
-            </span>
-            <span>Mark Complete</span>
-          </button>
-        </p>
-      </footer>
+    <div className="post">
+      <TweetEmbed id={tweetId} options={{ cards: 'hidden', width: 300 }} />
+      <button className="button is-success" onClick={handleComplete}>
+        Mark Complete
+      </button>
     </div>
   );
 };

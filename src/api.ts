@@ -1,4 +1,5 @@
 import * as firebase from 'firebase/app';
+import { getTwitterId } from './util';
 
 export const fetchPosts = async (): Promise<Post[]> => {
   const posts = [] as Post[];
@@ -12,6 +13,11 @@ export const fetchPosts = async (): Promise<Post[]> => {
 };
 
 export const createPost = async (tweetUrl: string): Promise<Post> => {
+  const twitterId = getTwitterId(tweetUrl);
+  if (!twitterId) {
+    throw new Error('Link is not a valid Twitter url');
+  }
+
   const postParams: Omit<Post, 'id'> = {
     approvedAt: new Date(),
     createdAt: new Date(),
@@ -27,11 +33,7 @@ export const createPost = async (tweetUrl: string): Promise<Post> => {
 };
 
 export const completePost = async (postId: string): Promise<void> =>
-  firebase
-    .firestore()
-    .collection('posts')
-    .doc(postId)
-    .update({
-      completedAt: new Date(),
-      completedBy: firebase.auth().currentUser?.uid,
-    });
+  firebase.firestore().collection('posts').doc(postId).update({
+    completedAt: new Date(),
+    completedBy: firebase.auth().currentUser?.uid,
+  });
