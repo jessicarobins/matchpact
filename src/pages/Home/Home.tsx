@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import * as api from '../../api';
 import PostForm from '../../components/PostForm';
 import PostList from '../../components/PostList';
+import { usePosts } from '../../hooks/usePosts';
 import './Home.scss';
 
 type Props = {
@@ -9,43 +9,7 @@ type Props = {
 };
 
 const Home: FC<Props> = (props: Props) => {
-  const [posts, setPosts] = React.useState([] as Post[]);
-
-  const groupedPosts = { complete: [] as Post[], incomplete: [] as Post[] };
-  posts.forEach((post) => {
-    if (post.completedAt) {
-      groupedPosts.complete.push(post);
-    } else {
-      groupedPosts.incomplete.push(post);
-    }
-  });
-
-  React.useEffect(() => {
-    async function getPosts() {
-      const posts = await api.fetchPosts();
-      setPosts(posts);
-    }
-
-    getPosts();
-  }, []);
-
-  const onAddPost = async (text: string) => {
-    const post = await api.createPost(text);
-    setPosts([post, ...posts]);
-  };
-
-  const onComplete = async (postId: string) => {
-    const updatedPostParams = await api.completePost(postId);
-    setPosts((prevValue) =>
-      prevValue.map((post) => {
-        if (post.id === postId) {
-          return { ...post, ...updatedPostParams };
-        }
-
-        return post;
-      }),
-    );
-  };
+  const [groupedPosts, postApi] = usePosts();
 
   return (
     <div className="has-background-dark">
@@ -58,7 +22,7 @@ const Home: FC<Props> = (props: Props) => {
             <h2 className="subtitle is-3 has-text-accent-dark">
               Who is matching donations?
             </h2>
-            <PostForm onAddPost={onAddPost} />
+            <PostForm onAddPost={postApi.addPost} />
           </div>
         </div>
       </section>
@@ -72,7 +36,10 @@ const Home: FC<Props> = (props: Props) => {
               These users have not yet completed their maximum offer to match.
               Donate and send them screenshots!
             </h4>
-            <PostList onComplete={onComplete} posts={groupedPosts.incomplete} />
+            <PostList
+              onComplete={postApi.completePost}
+              posts={groupedPosts.incomplete}
+            />
           </div>
         </div>
       </section>

@@ -6,6 +6,7 @@ type Props = {
 };
 
 const PostForm: FC<Props> = (props: Props) => {
+  const [submitting, setSubmitting] = React.useState(false);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState('');
 
@@ -27,14 +28,19 @@ const PostForm: FC<Props> = (props: Props) => {
 
   const handleSubmit = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    try {
-      const response = await recaptchaRef.current.verifier.verify();
-      if (response) {
-        await props.onAddPost(text);
+    if (!submitting) {
+      setSubmitting(true);
+      try {
+        const response = await recaptchaRef.current.verifier.verify();
+        if (response) {
+          await props.onAddPost(text);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setText('');
+        setSubmitting(false);
       }
-      setText('');
-    } catch (err) {
-      setError(err.message);
     }
   };
 
@@ -52,7 +58,11 @@ const PostForm: FC<Props> = (props: Props) => {
             />
           </div>
           <div className="control">
-            <button className="button is-info is-large" type="submit">
+            <button
+              className="button is-info is-large"
+              disabled={submitting}
+              type="submit"
+            >
               Submit
             </button>
           </div>
