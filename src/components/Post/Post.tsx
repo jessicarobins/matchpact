@@ -4,25 +4,27 @@ import { getTwitterId } from '../../util';
 import './Post.css';
 
 type Props = {
-  onComplete: (postId: string) => void;
+  onComplete?: (postId: string) => void;
   post: Post;
 };
 
 const Post: FC<Props> = (props: Props) => {
-  const handleComplete = () => props.onComplete(props.post.id);
+  const handleComplete = () => props.onComplete?.(props.post.id);
 
   const tweetId = getTwitterId(props.post.tweetUrl);
 
-  if (!tweetId) {
+  if (!tweetId || !props.post.approvedAt) {
     return null;
   }
 
   return (
     <div className="post">
       <TweetEmbed id={tweetId} options={{ cards: 'hidden', width: 300 }} />
-      <button className="button is-success" onClick={handleComplete}>
-        Mark Complete
-      </button>
+      {props.onComplete && (
+        <button className="button is-success" onClick={handleComplete}>
+          Mark Complete
+        </button>
+      )}
     </div>
   );
 };

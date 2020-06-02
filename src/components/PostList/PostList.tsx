@@ -3,7 +3,7 @@ import Post from '../Post';
 import './PostList.css';
 
 type Props = {
-  onComplete: (postId: string) => void;
+  onComplete?: (postId: string) => void;
   posts: Post[];
 };
 

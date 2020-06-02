@@ -1,6 +1,6 @@
 interface Post {
   approvedAt: Date;
-  completeAt?: Date;
+  completedAt?: Date;
   completedBy?: string;
   createdAt: Date;
   createdBy?: string;

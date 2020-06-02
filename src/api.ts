@@ -32,8 +32,13 @@ export const createPost = async (tweetUrl: string): Promise<Post> => {
   return post;
 };
 
-export const completePost = async (postId: string): Promise<void> =>
-  firebase.firestore().collection('posts').doc(postId).update({
+export const completePost = async (
+  postId: string,
+): Promise<{ completedAt: Date; completedBy?: string }> => {
+  const params = {
     completedAt: new Date(),
     completedBy: firebase.auth().currentUser?.uid,
-  });
+  };
+  await firebase.firestore().collection('posts').doc(postId).update(params);
+  return params;
+};
