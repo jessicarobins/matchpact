@@ -18,7 +18,7 @@
     "eject": "react-scripts eject",
     "prettier": "prettier --check \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"{shared,src}/**/*.{js,jsx,ts,tsx}\"",
-    "deploy:prod": "rm -rf build/ && env-cmd -f .env.production yarn build && firebase deploy -P prod"
+    "deploy": "rm -rf build/ && yarn build && firebase deploy -P prod"
   },
   "eslintConfig": {
     "extends": "react-app"
