@@ -11,6 +11,15 @@ type Props = {
 const Home: FC<Props> = (props: Props) => {
   const [posts, setPosts] = React.useState([] as Post[]);
 
+  const groupedPosts = { complete: [] as Post[], incomplete: [] as Post[] };
+  posts.forEach((post) => {
+    if (post.completedAt) {
+      groupedPosts.complete.push(post);
+    } else {
+      groupedPosts.incomplete.push(post);
+    }
+  });
+
   React.useEffect(() => {
     async function getPosts() {
       const posts = await api.fetchPosts();
@@ -23,6 +32,19 @@ const Home: FC<Props> = (props: Props) => {
   const onAddPost = async (text: string) => {
     const post = await api.createPost(text);
     setPosts([post, ...posts]);
+  };
+
+  const onComplete = async (postId: string) => {
+    const updatedPostParams = await api.completePost(postId);
+    setPosts((prevValue) =>
+      prevValue.map((post) => {
+        if (post.id === postId) {
+          return { ...post, ...updatedPostParams };
+        }
+
+        return post;
+      }),
+    );
   };
 
   return (
@@ -40,8 +62,34 @@ const Home: FC<Props> = (props: Props) => {
           </div>
         </div>
       </section>
-      <section className="container post-list-container">
-        <PostList onComplete={api.completePost} posts={posts} />
+      <section className="hero is-dark">
+        <div className="hero-body">
+          <div className="container">
+            <h3 className="title special-font is-3 has-text-light">
+              Open offers
+            </h3>
+            <h4 className="subtitle is-5 has-text-accent-dark">
+              These users have not yet completed their maximum offer to match.
+              Donate and send them screenshots!
+            </h4>
+            <PostList onComplete={onComplete} posts={groupedPosts.incomplete} />
+          </div>
+        </div>
+      </section>
+      <section className="hero is-light">
+        <div className="hero-body">
+          <div className="container">
+            <h3 className="title special-font is-3 has-text-dark">
+              Closed offers
+            </h3>
+            <h4 className="subtitle is-5 has-text-accent-dark">
+              These users have already completed their maximum match. Check in
+              with them often because some have stated they will continue to
+              match donations on another day.
+            </h4>
+            <PostList posts={groupedPosts.complete} />
+          </div>
+        </div>
       </section>
       <footer className="footer">
         <div className="content has-text-centered">
