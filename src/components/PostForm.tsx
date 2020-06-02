@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import firebase from 'firebase/app';
 
 type Props = {
   onAddPost: (text: string) => void;
@@ -8,6 +9,17 @@ const PostForm: FC<Props> = (props: Props) => {
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState('');
 
+  const recaptchaRef = React.useRef({}) as any;
+
+  React.useEffect(() => {
+    recaptchaRef.current.verifier = new firebase.auth.RecaptchaVerifier(
+      'recaptcha',
+      {
+        size: 'invisible',
+      },
+    );
+  }, [recaptchaRef]);
+
   const handleChange = (e: React.BaseSyntheticEvent) => {
     setText(e.target.value);
     setError('');
@@ -15,13 +27,14 @@ const PostForm: FC<Props> = (props: Props) => {
 
   const handleSubmit = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    if (text) {
-      try {
+    try {
+      const response = await recaptchaRef.current.verifier.verify();
+      if (response) {
         await props.onAddPost(text);
-        setText('');
-      } catch (err) {
-        setError(err.message);
       }
+      setText('');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -46,6 +59,7 @@ const PostForm: FC<Props> = (props: Props) => {
         </div>
         {!!error && <p className="help is-danger">{error}</p>}
       </div>
+      <div id="recaptcha"></div>
     </form>
   );
 };

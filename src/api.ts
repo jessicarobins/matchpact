@@ -3,7 +3,11 @@ import { getTwitterId } from './util';
 
 export const fetchPosts = async (): Promise<Post[]> => {
   const posts = [] as Post[];
-  const snapshot = await firebase.firestore().collection('posts').get();
+  const snapshot = await firebase
+    .firestore()
+    .collection('posts')
+    .orderBy('createdAt', 'desc')
+    .get();
   snapshot.forEach(function (doc) {
     const post = { ...doc.data(), id: doc.id } as Post;
     posts.push(post);
@@ -13,6 +17,10 @@ export const fetchPosts = async (): Promise<Post[]> => {
 };
 
 export const createPost = async (tweetUrl: string): Promise<Post> => {
+  if (!tweetUrl) {
+    throw new Error('Tweet url is required');
+  }
+
   const twitterId = getTwitterId(tweetUrl);
   if (!twitterId) {
     throw new Error('Link is not a valid Twitter url');
