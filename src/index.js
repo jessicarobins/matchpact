@@ -12,9 +12,9 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 if (!process.env.NODE_ENV === 'development') {
+  firebase.analytics();
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
   });
