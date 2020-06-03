@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import TweetEmbed from 'react-tweet-embed';
 import { getTwitterId } from '../../util';
+import Tweet from './Tweet';
 import './Post.css';
 
 type Props = {
@@ -26,7 +26,7 @@ const Post: FC<Props> = (props: Props) => {
 
   return (
     <div className="post" id={props.post.id}>
-      <TweetEmbed id={tweetId} options={{ cards: 'hidden', width: 300 }} />
+      <Tweet tweetId={tweetId} tweetUrl={props.post.tweetUrl} />
       <div className="post-buttons">
         {props.onComplete && (
           <button className="button is-success" onClick={handleComplete}>
