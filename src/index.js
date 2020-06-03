@@ -13,12 +13,10 @@ import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
 
-if (!process.env.NODE_ENV === 'development') {
-  firebase.analytics();
-  Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
-  });
-}
+firebase.analytics();
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+});
 
 ReactDOM.render(
   <React.StrictMode>
