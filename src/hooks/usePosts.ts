@@ -14,7 +14,8 @@ interface PostMap {
 
 export interface UsePostApi {
   addPost: (text: string) => void;
-  completePost: (postId: string) => void;
+  completePost: (tweetId: string) => void;
+  reportPost: (tweetId: string) => void;
 }
 
 export const usePosts = (): [GroupedPosts, UsePostApi] => {
@@ -74,5 +75,18 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
     }
   };
 
-  return [groupedPosts, { addPost, completePost }];
+  const reportPost = async (tweetId: string) => {
+    const userUid = await api.reportPost(posts[tweetId].id);
+    if (userUid) {
+      setPosts((prevValue) => ({
+        ...prevValue,
+        [tweetId]: {
+          ...prevValue[tweetId],
+          reporters: [...(prevValue[tweetId].reporters ?? []), userUid],
+        },
+      }));
+    }
+  };
+
+  return [groupedPosts, { addPost, completePost, reportPost }];
 };

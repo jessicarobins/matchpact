@@ -38,7 +38,9 @@ const Home: FC<Props> = (props: Props) => {
             </h4>
             <PostList
               onComplete={postApi.completePost}
+              onReport={postApi.reportPost}
               posts={groupedPosts.incomplete}
+              userUid={props.userId}
             />
           </div>
         </div>
@@ -54,7 +56,11 @@ const Home: FC<Props> = (props: Props) => {
               with them often because some have stated they will continue to
               match donations on another day.
             </h4>
-            <PostList posts={groupedPosts.complete} />
+            <PostList
+              onReport={postApi.reportPost}
+              posts={groupedPosts.complete}
+              userUid={props.userId}
+            />
           </div>
         </div>
       </section>
