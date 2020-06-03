@@ -57,3 +57,30 @@ export const completePost = async (postId: string): Promise<string | null> => {
 
   return null;
 };
+
+export const reportPost = async (postId: string) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    await firebase
+      .firestore()
+      .collection('posts')
+      .doc(postId)
+      .update({
+        reporters: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+      });
+    sendSlack(`User '${currentUser.uid}' reported post '${postId}'`);
+    return currentUser.uid;
+  }
+
+  return null;
+};
+
+const sendSlack = (text: string) => {
+  const slackWebhookUrl = process.env.REACT_APP_SLACK_WEBHOOK_URL;
+  if (slackWebhookUrl) {
+    fetch(slackWebhookUrl, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  }
+};
