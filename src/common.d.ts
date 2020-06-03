@@ -2,8 +2,10 @@ interface Post {
   approvedAt: Date;
   completedAt?: Date;
   completedBy?: string;
+  completers?: string[];
   createdAt: Date;
   createdBy?: string;
   id: string;
+  reporters?: string[];
   tweetUrl: string;
 }

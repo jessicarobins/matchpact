@@ -1,6 +1,7 @@
 import React from 'react';
+import * as firebase from 'firebase/app';
 import * as api from '../api';
-import { getTwitterId } from '../util';
+import { getTwitterId, isComplete } from '../util';
 
 interface GroupedPosts {
   complete: Post[];
@@ -18,6 +19,7 @@ export interface UsePostApi {
 
 export const usePosts = (): [GroupedPosts, UsePostApi] => {
   const [posts, setPosts] = React.useState({} as PostMap);
+  const userUid = firebase.auth().currentUser?.uid;
 
   React.useEffect(() => {
     async function getPosts() {
@@ -36,7 +38,7 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
 
   const groupedPosts = { complete: [], incomplete: [] } as GroupedPosts;
   Object.values(posts).forEach((post) => {
-    if (post.completedAt) {
+    if (isComplete(post, userUid)) {
       groupedPosts.complete.push(post);
     } else {
       groupedPosts.incomplete.push(post);
@@ -60,11 +62,16 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
   };
 
   const completePost = async (tweetId: string) => {
-    const updatedPostParams = await api.completePost(posts[tweetId].id);
-    setPosts((prevValue) => ({
-      ...prevValue,
-      [tweetId]: { ...prevValue.postId, ...updatedPostParams },
-    }));
+    const userUid = await api.completePost(posts[tweetId].id);
+    if (userUid) {
+      setPosts((prevValue) => ({
+        ...prevValue,
+        [tweetId]: {
+          ...prevValue[tweetId],
+          completers: [...(prevValue[tweetId].completers ?? []), userUid],
+        },
+      }));
+    }
   };
 
   return [groupedPosts, { addPost, completePost }];
