@@ -28,8 +28,10 @@ export const createPost = async (tweetUrl: string): Promise<Post> => {
 
   const postParams: Omit<Post, 'id'> = {
     approvedAt: new Date(),
+    completers: [],
     createdAt: new Date(),
     createdBy: firebase.auth().currentUser?.uid,
+    reporters: [],
     tweetUrl,
   };
 
@@ -40,13 +42,18 @@ export const createPost = async (tweetUrl: string): Promise<Post> => {
   return post;
 };
 
-export const completePost = async (
-  postId: string,
-): Promise<{ completedAt: Date; completedBy?: string }> => {
-  const params = {
-    completedAt: new Date(),
-    completedBy: firebase.auth().currentUser?.uid,
-  };
-  await firebase.firestore().collection('posts').doc(postId).update(params);
-  return params;
+export const completePost = async (postId: string): Promise<string | null> => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    await firebase
+      .firestore()
+      .collection('posts')
+      .doc(postId)
+      .update({
+        completers: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+      });
+    return currentUser.uid;
+  }
+
+  return null;
 };
