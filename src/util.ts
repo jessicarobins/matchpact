@@ -1,6 +1,6 @@
 export const getTwitterId = (url: string) => url.match(/status\/(\d{19})/)?.[1];
 
-const COMPLETE_THRESHOLD = 1;
+const COMPLETE_THRESHOLD = 0;
 
 export const isComplete = (post: Post, userUid?: string) => {
   if (post.completedAt) {
