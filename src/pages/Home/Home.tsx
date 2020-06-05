@@ -3,6 +3,7 @@ import PostForm from '../../components/PostForm';
 import PostList from '../../components/PostList';
 import { usePosts } from '../../hooks/usePosts';
 import './Home.scss';
+import CollapsibleSection from '../../components/CollapsibleSection';
 
 type Props = {
   userId: string;
@@ -26,44 +27,37 @@ const Home: FC<Props> = (props: Props) => {
           </div>
         </div>
       </section>
-      <section className="hero is-dark">
-        <div className="hero-body">
-          <div className="container">
-            <h3 className="title special-font is-3 has-text-light">
-              Open offers
-            </h3>
-            <h4 className="subtitle is-5 has-text-accent-dark">
-              These users have not yet completed their maximum offer to match.
-              Donate and send them screenshots!
-            </h4>
-            <PostList
-              onComplete={postApi.completePost}
-              onReport={postApi.reportPost}
-              posts={groupedPosts.incomplete}
-              userUid={props.userId}
-            />
-          </div>
-        </div>
-      </section>
-      <section className="hero is-light">
-        <div className="hero-body">
-          <div className="container">
-            <h3 className="title special-font is-3 has-text-dark">
-              Closed offers
-            </h3>
-            <h4 className="subtitle is-5 has-text-accent-dark">
-              These users have already completed their maximum match. Check in
+      <CollapsibleSection
+        className="is-dark"
+        postCount={groupedPosts.incomplete.length}
+        subtitle="These users have not yet completed their maximum offer to match.
+              Donate and send them screenshots!"
+        title="Open Offers"
+        titleClassName="has-text-light"
+      >
+        <PostList
+          onComplete={postApi.completePost}
+          onReport={postApi.reportPost}
+          posts={groupedPosts.incomplete}
+          userUid={props.userId}
+        />
+      </CollapsibleSection>
+      <CollapsibleSection
+        className="is-light"
+        initialCollapsed
+        postCount={groupedPosts.complete.length}
+        subtitle="These users have already completed their maximum match. Check in
               with them often because some have stated they will continue to
-              match donations on another day.
-            </h4>
-            <PostList
-              onReport={postApi.reportPost}
-              posts={groupedPosts.complete}
-              userUid={props.userId}
-            />
-          </div>
-        </div>
-      </section>
+              match donations on another day."
+        title="Closed offers"
+        titleClassName="has-text-dark"
+      >
+        <PostList
+          onReport={postApi.reportPost}
+          posts={groupedPosts.complete}
+          userUid={props.userId}
+        />
+      </CollapsibleSection>
       <footer className="footer">
         <div className="content has-text-centered">
           <p>
