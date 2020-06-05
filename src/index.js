@@ -13,7 +13,7 @@ import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
 
-// firebase.analytics();
+firebase.analytics();
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
 });
