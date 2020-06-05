@@ -9,7 +9,7 @@ This project uses [Firebase](https://firebase.google.com/) as the web host and b
 - Follow [the steps listed here](https://firebase.google.com/docs/web/setup#using-module-bundlers) to create a new Firebase project using module bundlers.
 - You will want to set up the following Firebase services:
   - Hosting
-  - Authentication (Anonymous)
+  - Authentication (you will also need to toggle on the Anonymous login, once you've enabled authentication)
   - Database
 - If you want to deploy to your project using the firebase cli (or `yarn deploy`), you will also need to change `matchpact` in .firebaserc to the name of your project.
 
