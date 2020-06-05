@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import TweetEmbed from 'react-tweet-embed';
+import { TwitterTweetEmbed } from 'react-twitter-embed';
 import './Tweet.css';
 
 type Props = {
@@ -14,7 +14,10 @@ const Tweet: FC<Props> = (props: Props) => (
         View tweet
       </a>
     </div>
-    <TweetEmbed id={props.tweetId} options={{ cards: 'hidden', width: 300 }} />
+    <TwitterTweetEmbed
+      tweetId={props.tweetId}
+      options={{ cards: 'hidden', width: 300 }}
+    />
   </>
 );
 

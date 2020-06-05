@@ -13,17 +13,12 @@ import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.analytics();
+// firebase.analytics();
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
 });
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
