@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import firebase from 'firebase/app';
+import TweetTemplate from './TweetTemplate';
 
 type Props = {
   onAddPost: (text: string) => void;
 };
 
 const PostForm: FC<Props> = (props: Props) => {
+  const [showTemplateTweet, setShowTemplateTweet] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState('');
@@ -34,6 +36,7 @@ const PostForm: FC<Props> = (props: Props) => {
         const response = await recaptchaRef.current.verifier.verify();
         if (response) {
           await props.onAddPost(text);
+          setShowTemplateTweet(true);
         }
       } catch (err) {
         setError(err.message);
@@ -45,32 +48,37 @@ const PostForm: FC<Props> = (props: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="field">
-        <div className="field has-addons">
-          <div className="control is-expanded">
-            <input
-              className={`input is-large ${!!error ? 'is-danger' : ''}`}
-              onChange={handleChange}
-              placeholder="Submit a new Twitter link"
-              type="text"
-              value={text}
-            />
+    <>
+      {showTemplateTweet && (
+        <TweetTemplate onClose={() => setShowTemplateTweet(false)} />
+      )}
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <div className="field has-addons">
+            <div className="control is-expanded">
+              <input
+                className={`input is-large ${!!error ? 'is-danger' : ''}`}
+                onChange={handleChange}
+                placeholder="Submit a new Twitter link"
+                type="text"
+                value={text}
+              />
+            </div>
+            <div className="control">
+              <button
+                className="button is-info is-large"
+                disabled={submitting}
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
           </div>
-          <div className="control">
-            <button
-              className="button is-info is-large"
-              disabled={submitting}
-              type="submit"
-            >
-              Submit
-            </button>
-          </div>
+          {!!error && <p className="help is-danger">{error}</p>}
         </div>
-        {!!error && <p className="help is-danger">{error}</p>}
-      </div>
-      <div id="recaptcha"></div>
-    </form>
+        <div id="recaptcha"></div>
+      </form>
+    </>
   );
 };
 

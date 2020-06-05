@@ -1,3 +1,5 @@
+declare module 'react-twitter-embed';
+
 interface Post {
   approvedAt: Date;
   completedAt?: Date;
