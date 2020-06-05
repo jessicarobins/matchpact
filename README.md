@@ -11,6 +11,7 @@ This project uses [Firebase](https://firebase.google.com/) as the web host and b
   - Hosting
   - Authentication (Anonymous)
   - Database
+- If you want to deploy to your project using the firebase cli (or `yarn deploy`), you will also need to change `matchpact` in .firebaserc to the name of your project.
 
 ### Environment variables
 
