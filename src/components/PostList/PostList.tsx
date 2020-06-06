@@ -3,8 +3,8 @@ import Post from '../Post';
 import './PostList.css';
 
 type Props = {
-  onComplete?: (tweetId: string) => void;
-  onReport: (tweetId: string) => void;
+  onComplete?: (postId: string) => void;
+  onReport: (postId: string) => void;
   posts: Post[];
   userUid: string;
 };

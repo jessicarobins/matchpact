@@ -9,5 +9,5 @@ interface Post {
   createdBy?: string;
   id: string;
   reporters?: string[];
-  tweetUrl: string;
+  postUrl: string;
 }

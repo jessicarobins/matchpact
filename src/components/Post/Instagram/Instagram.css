@@ -1,0 +1,7 @@
+.ig.card {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  width: 300px;
+  padding: 8px 15px 10px;
+  margin-bottom: -15px;
+}

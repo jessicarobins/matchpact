@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Sentry from '@sentry/browser';
+// import * as Sentry from '@sentry/browser';
 import * as firebase from 'firebase/app';
 import 'firebase/analytics';
 import 'firebase/auth';
@@ -13,10 +13,10 @@ import './index.scss';
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.analytics();
-Sentry.init({
-  dsn: process.env.REACT_APP_SENTRY_DSN,
-});
+// firebase.analytics();
+// Sentry.init({
+  // dsn: process.env.REACT_APP_SENTRY_DSN,
+// });
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

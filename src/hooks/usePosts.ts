@@ -1,7 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase/app';
 import * as api from '../api';
-import { getTwitterId, isComplete } from '../util';
+import { getTwitterId, getIgId, isComplete } from '../util';
 
 interface GroupedPosts {
   complete: Post[];
@@ -14,8 +14,8 @@ interface PostMap {
 
 export interface UsePostApi {
   addPost: (text: string) => void;
-  completePost: (tweetId: string) => void;
-  reportPost: (tweetId: string) => void;
+  completePost: (postId: string) => void;
+  reportPost: (postId: string) => void;
 }
 
 export const usePosts = (): [GroupedPosts, UsePostApi] => {
@@ -26,7 +26,7 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
     async function getPosts() {
       const posts = await api.fetchPosts();
       const postMap = posts.reduce((acc, post) => {
-        const twitterId = getTwitterId(post.tweetUrl);
+        const twitterId = getTwitterId(post.postUrl);
         if (!twitterId) return acc;
 
         return { ...acc, [twitterId]: post };
@@ -47,42 +47,42 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
   });
 
   const addPost = async (text: string) => {
-    const twitterId = getTwitterId(text);
-    if (!twitterId) {
-      throw new Error('Link is not a valid Twitter url');
+    const postId = getTwitterId(text) || getIgId(text);
+    if (!postId) {
+      throw new Error('Link is not a valid url');
     }
-    if (posts[twitterId]) {
-      throw new Error('Tweet already exists');
+    if (posts[postId]) {
+      throw new Error('Post already exists');
     }
 
     const post = await api.createPost(text);
     setPosts((prevValue) => ({
-      [twitterId]: post,
+      [postId]: post,
       ...prevValue,
     }));
   };
 
-  const completePost = async (tweetId: string) => {
-    const userUid = await api.completePost(posts[tweetId].id);
+  const completePost = async (postId: string) => {
+    const userUid = await api.completePost(posts[postId].id);
     if (userUid) {
       setPosts((prevValue) => ({
         ...prevValue,
-        [tweetId]: {
-          ...prevValue[tweetId],
-          completers: [...(prevValue[tweetId].completers ?? []), userUid],
+        [postId]: {
+          ...prevValue[postId],
+          completers: [...(prevValue[postId].completers ?? []), userUid],
         },
       }));
     }
   };
 
-  const reportPost = async (tweetId: string) => {
-    const userUid = await api.reportPost(posts[tweetId].id);
+  const reportPost = async (postId: string) => {
+    const userUid = await api.reportPost(posts[postId].id);
     if (userUid) {
       setPosts((prevValue) => ({
         ...prevValue,
-        [tweetId]: {
-          ...prevValue[tweetId],
-          reporters: [...(prevValue[tweetId].reporters ?? []), userUid],
+        [postId]: {
+          ...prevValue[postId],
+          reporters: [...(prevValue[postId].reporters ?? []), userUid],
         },
       }));
     }

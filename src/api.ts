@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-import { getTwitterId } from './util';
+import { getTwitterId, getIgId } from './util';
 
 export const fetchPosts = async (): Promise<Post[]> => {
   const posts = [] as Post[];
@@ -16,14 +16,14 @@ export const fetchPosts = async (): Promise<Post[]> => {
   return posts;
 };
 
-export const createPost = async (tweetUrl: string): Promise<Post> => {
-  if (!tweetUrl) {
+export const createPost = async (postUrl: string): Promise<Post> => {
+  if (!postUrl) {
     throw new Error('Tweet url is required');
   }
 
-  const twitterId = getTwitterId(tweetUrl);
-  if (!twitterId) {
-    throw new Error('Link is not a valid Twitter url');
+  const postId = getTwitterId(postUrl) || getIgId(postUrl);
+  if (!postId) {
+    throw new Error('Link is not a valid url');
   }
 
   const postParams: Omit<Post, 'id'> = {
@@ -32,7 +32,7 @@ export const createPost = async (tweetUrl: string): Promise<Post> => {
     createdAt: new Date(),
     createdBy: firebase.auth().currentUser?.uid,
     reporters: [],
-    tweetUrl,
+    postUrl,
   };
 
   const docRef = await firebase.firestore().collection('posts').add(postParams);
