@@ -59,7 +59,7 @@ const PostForm: FC<Props> = (props: Props) => {
               <input
                 className={`input is-large ${!!error ? 'is-danger' : ''}`}
                 onChange={handleChange}
-                placeholder="Submit a new Twitter link"
+                placeholder="Submit a new link"
                 type="text"
                 value={text}
               />

@@ -41,7 +41,7 @@ const CollapsibleSection: FC<Props> = (props: Props) => {
                   className="button is-text"
                   onClick={() => setCollapsed(false)}
                 >
-                  Show {props.postCount} tweets
+                  Show {props.postCount} offers
                 </button>
               )}
             </div>

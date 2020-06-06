@@ -18,7 +18,7 @@ export const fetchPosts = async (): Promise<Post[]> => {
 
 export const createPost = async (postUrl: string): Promise<Post> => {
   if (!postUrl) {
-    throw new Error('Tweet url is required');
+    throw new Error('A link is required');
   }
 
   const postId = getTwitterId(postUrl) || getIgId(postUrl);
