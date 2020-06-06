@@ -9,7 +9,7 @@ interface GroupedPosts {
 }
 
 interface PostMap {
-  [twitterId: string]: Post;
+  [postId: string]: Post;
 }
 
 export interface UsePostApi {
@@ -26,10 +26,10 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
     async function getPosts() {
       const posts = await api.fetchPosts();
       const postMap = posts.reduce((acc, post) => {
-        const twitterId = getTwitterId(post.postUrl);
-        if (!twitterId) return acc;
+        const postId = getTwitterId(post.postUrl) || getIgId(post.postUrl);
+        if (!postId) return acc;
 
-        return { ...acc, [twitterId]: post };
+        return { ...acc, [postId]: post };
       }, {});
       setPosts(postMap);
     }
