@@ -3,11 +3,11 @@ import firebase from 'firebase/app';
 import TweetTemplate from './TweetTemplate';
 
 type Props = {
-  onAddPost: (text: string) => void;
+  onAddPost: (text: string) => Promise<string>;
 };
 
 const PostForm: FC<Props> = (props: Props) => {
-  const [showTemplateTweet, setShowTemplateTweet] = React.useState(false);
+  const [replyToTweetId, setReplyToTweetId] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState('');
@@ -35,8 +35,8 @@ const PostForm: FC<Props> = (props: Props) => {
       try {
         const response = await recaptchaRef.current.verifier.verify();
         if (response) {
-          await props.onAddPost(text);
-          setShowTemplateTweet(true);
+          const tweetId = await props.onAddPost(text);
+          setReplyToTweetId(tweetId);
         }
       } catch (err) {
         setError(err.message);
@@ -49,8 +49,11 @@ const PostForm: FC<Props> = (props: Props) => {
 
   return (
     <>
-      {showTemplateTweet && (
-        <TweetTemplate onClose={() => setShowTemplateTweet(false)} />
+      {replyToTweetId && (
+        <TweetTemplate
+          onClose={() => setReplyToTweetId('')}
+          tweetId={replyToTweetId}
+        />
       )}
       <form onSubmit={handleSubmit}>
         <div className="field">

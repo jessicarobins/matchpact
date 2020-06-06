@@ -4,5 +4,10 @@
 }
 
 .tweet-template .cta {
-  margin-right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.tweet-template .button {
+  margin-left: 16px;
 }

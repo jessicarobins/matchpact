@@ -13,7 +13,7 @@ interface PostMap {
 }
 
 export interface UsePostApi {
-  addPost: (text: string) => void;
+  addPost: (text: string) => Promise<string>;
   completePost: (tweetId: string) => void;
   reportPost: (tweetId: string) => void;
 }
@@ -60,6 +60,8 @@ export const usePosts = (): [GroupedPosts, UsePostApi] => {
       [twitterId]: post,
       ...prevValue,
     }));
+
+    return twitterId;
   };
 
   const completePost = async (tweetId: string) => {
