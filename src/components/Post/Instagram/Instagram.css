@@ -3,5 +3,9 @@
   border-top-right-radius: 8px;
   width: 300px;
   padding: 8px 15px 10px;
-  margin-bottom: -15px;
+  margin-bottom: -2px;
+}
+
+.instagram-media-rendered {
+  min-width: 300px !important;
 }

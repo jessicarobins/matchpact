@@ -16,8 +16,6 @@ const igPost: FC<Props> = (props: Props) => (
     </div>
     <InstagramEmbed
       url={props.igUrl}
-      // igId={props.igId}
-      // options={{ cards: 'hidden', width: 300 }}
     />
   </>
 );
