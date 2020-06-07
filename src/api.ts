@@ -21,6 +21,13 @@ export const createPost = async (postUrl: string): Promise<Post> => {
     throw new Error('A link is required');
   }
 
+  if (postUrl.startsWith('http://')) {
+    postUrl = postUrl.replace('http', 'https');
+  }
+  if (!postUrl.startsWith('https://')) {
+    postUrl = 'https://' + postUrl;
+  }
+
   const postId = getTwitterId(postUrl) || getIgId(postUrl);
   if (!postId) {
     throw new Error('Link is not a valid url');

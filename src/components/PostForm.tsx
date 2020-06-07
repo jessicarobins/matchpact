@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
 import firebase from 'firebase/app';
 import TweetTemplate from './TweetTemplate';
+import ConfirmTemplate from './ConfirmTemplate';
 
 type Props = {
   onAddPost: (text: string) => void;
 };
 
 const PostForm: FC<Props> = (props: Props) => {
-  const [showTemplateTweet, setShowTemplateTweet] = React.useState(false);
+  const [showTweetTemplate, setShowTweetTemplate] = React.useState(false);
+  const [showConfirmTemplate, setShowConfirmTemplate] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [text, setText] = React.useState('');
   const [error, setError] = React.useState('');
@@ -36,7 +38,12 @@ const PostForm: FC<Props> = (props: Props) => {
         const response = await recaptchaRef.current.verifier.verify();
         if (response) {
           await props.onAddPost(text);
-          setShowTemplateTweet(true);
+          if (text.startsWith('https://twitter.com')) {
+            setShowTweetTemplate(true);
+          }
+          else {
+            setShowConfirmTemplate(true);
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -49,8 +56,11 @@ const PostForm: FC<Props> = (props: Props) => {
 
   return (
     <>
-      {showTemplateTweet && (
-        <TweetTemplate onClose={() => setShowTemplateTweet(false)} />
+      {showTweetTemplate && (
+        <TweetTemplate onClose={() => setShowTweetTemplate(false)} />
+      )}
+      {showConfirmTemplate && (
+        <ConfirmTemplate onClose={() => setShowConfirmTemplate(false)} />
       )}
       <form onSubmit={handleSubmit}>
         <div className="field">
